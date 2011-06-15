@@ -62,4 +62,27 @@ public class Map {
 		return map[y][x];
 	}
 
+    public void testMap() {
+        String[][] output = new String[height][width];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (map[y][x].getObstacle() != null) 
+                    output[y][x] = "" + obstacles.indexOf(map[y][x].getObstacle());
+                else
+                    output[y][x] = ".";
+            }
+        }
+        for (int i = 0; i < obstacles.size(); i++) {
+            for (Point p : obstacles.get(i).getCorners()) {
+                output[(int)p.y][(int)p.x] = "x";
+            }
+        }
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) 
+                System.out.print(output[y][x]);
+            System.out.println();
+        }
+        
+    }
+
 }
