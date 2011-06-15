@@ -18,87 +18,93 @@ public class Obstacle {
     public void grow(byte[][] map_raw, Square[][] map, int x, int y)
     {
         squares.add(map[y][x]);
-        map[y][x].addObstacle(this);
+        map[y][x].setObstacle(this);
         int w = map[0].length;
         int h = map.length;
-        int[] consec = new int[4]; //0: x - 1, 1: x + 1, 2: y - 1, 3: y + 1
-        boolean[] dir = new boolean[2]; //0: up, 1: left
-        if (isObstacle(x - 1, y - 1, w, h, map_raw, map))
+        int nw = 0, wn = 0, ne = 0, en = 0, se = 0, es = 0, sw = 0, ws = 0;
+
+        if (isEmpty(x - 1, y - 1, w, h, map_raw, map))
         {
-            consec[0]++;
-            consec[2]++;
+            nw++;
+            ne++;
+            wn++;
+            ws++;
         }
-        if (dir[0] = isObstacle(x, y - 1, w, h, map_raw, map))
+        if (isEmpty(x, y - 1, w, h, map_raw, map))
         {
-            consec[0]++;
-            consec[1]++;
-            consec[2]++;            
+            nw++;
+            wn++; 
+            ne++;
+            en++;
         }
-        if (isObstacle(x + 1, y - 1, w, h, map_raw, map))
+        if (isEmpty(x + 1, y - 1, w, h, map_raw, map))
         {
-            consec[1]++;
-            consec[2]++;
+            ne++;
+            nw++;
+            en++;
+            es++;
         }
-        
-        if (dir[1] = isObstacle(x - 1, y, w, h, map_raw, map))
+        if (isEmpty(x - 1, y, w, h, map_raw, map))
         {
-            consec[0]++;
-            consec[2]++;
-            consec[3]++;
+            sw++;
+            ws++;
+            nw++;
+            wn++;
         }
-        if (isObstacle(x + 1, y, w, h, map_raw, map))
+        if (isEmpty(x + 1, y, w, h, map_raw, map))
         {
-            consec[1]++;
-            consec[2]++;
-            consec[3]++;
+            se++;
+            es++;
+            ne++;
+            en++;
         }
-        
-        if (isObstacle(x - 1, y + 1, w, h, map_raw, map))
+        if (isEmpty(x - 1, y + 1, w, h, map_raw, map))
         {
-            consec[0]++;
-            consec[3]++;
+            sw++;
+            se++;
+            ws++;
+            wn++;
         }
-        if (isObstacle(x, y + 1, w, h, map_raw, map))
+        if (isEmpty(x, y + 1, w, h, map_raw, map))
         {
-            consec[0]++;
-            consec[1]++;
-            consec[3]++;
+            se++;
+            es++;
+            sw++;
+            ws++;
         }
-        if (isObstacle(x + 1, y + 1, w, h, map_raw, map))
+        if (isEmpty(x + 1, y + 1, w, h, map_raw, map))
         {
-            consec[1]++;
-            consec[3]++;
-        }        
-           
-        if (consec[0] == 4)
-        {
-            if (dir[0]); //top left
-            else; //bottom left
+            se++;
+            sw++;
+            es++;
+            en++;
         }
-        if (consec[1] == 4)
-        {
-            if (dir[0]); //top right
-            else; //bottom right
-        }
-        if (consec[2] == 4)
-        {
-            if (dir[1]); //top left
-            else; //top right
-        }
-        if (consec[3] == 4)
-        {
-            if (dir[1]); //bottom left
-            else; //bottom right
-        }       
+
+        if (nw == 4 || wn == 4)
+            corners.add(new Point(x - 0.5, y - 0.5));
+        if (ne == 4 || en == 4)
+            corners.add(new Point(x + 1.5, y - 0.5));
+        if (sw == 4 || ws == 4)
+            corners.add(new Point(x - 0.5, y + 1.5));
+        if (se == 4 || es == 4)
+            corners.add(new Point(x + 1.5, y + 1.5));
     }
     
-    private boolean isObstacle(int x, int y, int w, int h, byte[][] m, Square[][] m2)
+    private boolean isEmpty(int x, int y, int w, int h, byte[][] m, Square[][] m2)
     {
-        if (x > 0 && y > 0 && x < w && y < h && m[y][x] == OBSTACLE)
+        if (x < 0 || y < 0 || x >= w || y >= h)
+            return false;
+        if (m[y][x] == OBSTACLE)
         {
-            grow(m, m2, x, y);
-            return true;
+            if (m2[y][x].nullObstacle())
+                grow(m, m2, x, y);
+            return false;
         }
-        return false;
+        return true;
+    }
+    
+    public ArrayList<Point> getCorners()
+    {
+        return corners;
     }
 }
